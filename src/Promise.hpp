@@ -9,6 +9,7 @@
 #include "mofka/Future.hpp"
 #include "mofka/EventID.hpp"
 #include "mofka/Exception.hpp"
+#include "SmallObjectPool.hpp"
 #include <thallium.hpp>
 #include <variant>
 
@@ -82,7 +83,8 @@ struct Promise {
     };
 
     static std::shared_ptr<State> newState() {
-        return std::make_shared<State>();
+        static SmallObjectPool<State> allocationPool;
+        return allocationPool.Allocate();
     }
 
     Promise(std::shared_ptr<State> state)
