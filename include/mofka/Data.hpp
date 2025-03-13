@@ -35,9 +35,14 @@ class Data {
     using FreeCallback = std::function<void(Context)>;
 
     /**
+     * @brief Default constructor.
+     */
+    Data() = default;
+
+    /**
      * @brief Constructor. The resulting Data handle will represent NULL.
      */
-    Data(Context ctx = nullptr, FreeCallback free_cb = FreeCallback{});
+    Data(Context ctx, FreeCallback free_cb = FreeCallback{});
 
     /**
      * @brief Creates a Data object with a single segment.

@@ -26,18 +26,24 @@ Data::Data(std::vector<Segment> segments, Context ctx, FreeCallback free_cb)
 : self(std::make_shared<DataImpl>(std::move(segments), ctx, std::move(free_cb))) {}
 
 const std::vector<Data::Segment>& Data::segments() const {
-    return self->m_segments;
+    static const std::vector<Data::Segment> no_segments;
+    if(self) return self->m_segments;
+    else return no_segments;
 }
 
 size_t Data::size() const {
-    return self->m_size;
+    if(self) return self->m_size;
+    else return 0;
 }
 
 Data::Context Data::context() const {
-    return self->m_context;
+    if(self) return self->m_context;
+    else return nullptr;
 }
 
 void Data::write(const char* data, size_t size, size_t offset) const {
+    if(!self && (size != 0))
+        throw Exception{"Trying to call Data::write on a null Data object"};
     size_t off = 0;
     for(auto& seg : segments()) {
         if(offset >= seg.size) {
